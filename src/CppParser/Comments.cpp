@@ -91,25 +91,25 @@ static Comment* ConvertCommentBlock(clang::comments::Comment* C, clang::Compiler
     // This needs to have an underscore else we get an ICE under VS2012.
     CppSharp::CppParser::AST::Comment* _Comment = nullptr;
     auto kind = C->getCommentKind();
-    if (auto CK = dyn_cast<const comments::FullComment>(C))
+    if (const auto* CK = dyn_cast<const comments::FullComment>(C))
     {
-        auto FC = new FullComment();
+        auto* FC = new FullComment();
         _Comment = FC;
         for (auto I = CK->child_begin(), E = CK->child_end(); I != E; ++I)
             FC->Blocks.push_back(static_cast<BlockContentComment*>(ConvertCommentBlock(*I, CI)));
     }
-    else if (auto CK = dyn_cast<const comments::ParamCommandComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::ParamCommandComment>(C))
     {
-        auto PC = new ParamCommandComment();
+        auto* PC = new ParamCommandComment();
         _Comment = PC;
         HandleBlockCommand(CK, PC);
         if (CK->isParamIndexValid() && !CK->isVarArgParam())
             PC->paramIndex = CK->getParamIndex();
         PC->paragraphComment = static_cast<ParagraphComment*>(ConvertCommentBlock(CK->getParagraph(), CI));
     }
-    else if (auto CK = dyn_cast<const comments::TParamCommandComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::TParamCommandComment>(C))
     {
-        auto TC = new TParamCommandComment();
+        auto* TC = new TParamCommandComment();
         _Comment = TC;
         HandleBlockCommand(CK, TC);
         if (CK->isPositionValid())
@@ -117,37 +117,37 @@ static Comment* ConvertCommentBlock(clang::comments::Comment* C, clang::Compiler
                 TC->Position.push_back(CK->getIndex(I));
         TC->paragraphComment = static_cast<ParagraphComment*>(ConvertCommentBlock(CK->getParagraph(), CI));
     }
-    else if (auto CK = dyn_cast<const comments::VerbatimBlockComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::VerbatimBlockComment>(C))
     {
-        auto VB = new VerbatimBlockComment();
+        auto* VB = new VerbatimBlockComment();
         _Comment = VB;
         for (auto I = CK->child_begin(), E = CK->child_end(); I != E; ++I)
             VB->Lines.push_back(static_cast<VerbatimBlockLineComment*>(ConvertCommentBlock(*I, CI)));
     }
-    else if (auto CK = dyn_cast<const comments::VerbatimLineComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::VerbatimLineComment>(C))
     {
-        auto VL = new VerbatimLineComment();
+        auto* VL = new VerbatimLineComment();
         _Comment = VL;
         VL->text = CK->getText().str();
     }
-    else if (auto CK = dyn_cast<const comments::BlockCommandComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::BlockCommandComment>(C))
     {
-        auto BC = new BlockCommandComment();
+        auto* BC = new BlockCommandComment();
         _Comment = BC;
         HandleBlockCommand(CK, BC);
         BC->paragraphComment = static_cast<ParagraphComment*>(ConvertCommentBlock(CK->getParagraph(), CI));
     }
-    else if (auto CK = dyn_cast<const comments::ParagraphComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::ParagraphComment>(C))
     {
-        auto PC = new ParagraphComment();
+        auto* PC = new ParagraphComment();
         _Comment = PC;
         for (auto I = CK->child_begin(), E = CK->child_end(); I != E; ++I)
             PC->Content.push_back(static_cast<InlineContentComment*>(ConvertCommentBlock(*I, CI)));
         PC->isWhitespace = CK->isWhitespace();
     }
-    else if (auto CK = dyn_cast<const comments::HTMLStartTagComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::HTMLStartTagComment>(C))
     {
-        auto TC = new HTMLStartTagComment();
+        auto* TC = new HTMLStartTagComment();
         _Comment = TC;
         HandleInlineContent(CK, TC);
         TC->tagName = CK->getTagName().str();
@@ -160,23 +160,23 @@ static Comment* ConvertCommentBlock(clang::comments::Comment* C, clang::Compiler
             TC->Attributes.push_back(Attr);
         }
     }
-    else if (auto CK = dyn_cast<const comments::HTMLEndTagComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::HTMLEndTagComment>(C))
     {
-        auto TC = new HTMLEndTagComment();
+        auto* TC = new HTMLEndTagComment();
         _Comment = TC;
         HandleInlineContent(CK, TC);
         TC->tagName = CK->getTagName().str();
     }
-    else if (auto CK = dyn_cast<const comments::TextComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::TextComment>(C))
     {
-        auto TC = new TextComment();
+        auto* TC = new TextComment();
         _Comment = TC;
         HandleInlineContent(CK, TC);
         TC->text = CK->getText().str();
     }
-    else if (auto CK = dyn_cast<const comments::InlineCommandComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::InlineCommandComment>(C))
     {
-        auto IC = new InlineCommandComment();
+        auto* IC = new InlineCommandComment();
         _Comment = IC;
         HandleInlineContent(CK, IC);
         IC->commandId = CK->getCommandID();
@@ -189,9 +189,9 @@ static Comment* ConvertCommentBlock(clang::comments::Comment* C, clang::Compiler
             IC->Arguments.push_back(Arg);
         }
     }
-    else if (auto CK = dyn_cast<const comments::VerbatimBlockLineComment>(C))
+    else if (const auto* CK = dyn_cast<const comments::VerbatimBlockLineComment>(C))
     {
-        auto VL = new VerbatimBlockLineComment();
+        auto* VL = new VerbatimBlockLineComment();
         _Comment = VL;
         VL->text = CK->getText().str();
     }
